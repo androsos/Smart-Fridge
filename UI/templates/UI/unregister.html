@@ -1,0 +1,31 @@
+{% extends "UI/base2.html" %}
+
+{% block content_desc %}
+	Remove a product from your fridge.
+{% endblock content_desc%}
+
+{% block content_title %}
+  {% if title %}
+    {{ title }}
+  {% else %}
+    UI
+  {% endif %}
+{% endblock content_title %}
+
+{% block content_register %}
+	<div class="content-section">
+		<form method='POST'>
+        	{% csrf_token %}
+        	<fieldset class="form-group">
+        		<legend class="border-bottom mb-4"> Enter barcode </legend>
+        		{{ form }}
+        	</fieldset>
+        	<div class="form-group">
+        		<button class="btn btn-outline-primary" type="submit"> Search </button>
+        	</div>
+     	</form>
+	</div>
+
+	
+	
+{% endblock content_register %}

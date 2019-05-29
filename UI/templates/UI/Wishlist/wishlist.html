@@ -1,0 +1,88 @@
+{% extends "UI/base2.html" %}
+{% block content4 %}
+	{% with products=wishlist.all %}
+        {% if products %}
+          <p>You have {{ products|length }} product(s)</p>
+          {% for product in products %}
+            <p>{{ product.product.name }}</p>
+            <img src="{{ product.product.image.url }}" width=50>
+          {% endfor %}
+        {% else %}
+          <p>No products in your wishlist. You can add new products to your wishlist 
+            <a href="{% url 'UI-wishlist-wishlistAdd' %}">here</a>
+          </p>
+        {% endif %}
+    {% endwith %}
+{% endblock content4 %}
+
+{% block content_title %}
+  {% if title %}
+    {{ title }}
+  {% else %}
+    UI
+  {% endif %}
+{% endblock content_title %}
+
+
+{% block content_desc %}
+  {% with products=wishlist.all %}
+    {% if products %}
+      <p>You have {{ products|length }} product(s)</p>
+    {% else %}
+      <p>No products in your wishlist. You can add new products to your wishlist 
+      <a href="{% url 'UI-wishlist-wishlistAdd' %}">here</a>
+      </p>
+    {% endif %}
+  {% endwith %}
+{% endblock content_desc%}
+
+
+{% block content %}
+
+  
+  {% for item in queryset_list %}
+    {% if item %}
+        {% if forloop.counter0|divisibleby:200 %} <div class="row text-center"> {%  endif %}
+          <div class="col-sm-12 col-lg-3 ">
+            <div class="card bg-light  mb-4" style="max-width: 319px;" style="min-width: 319px;">
+              <img class="card-img-top" src="{{ item.product.image.url }}" style="width: 5rem; display: block; margin-left: auto; margin-right: auto;">
+              <div class="card-body text-center">
+                <a class="card-text text-primary" href="{% url 'Barcode-detail' item.product.pk %}">{{ item.product.name }}</a>
+                <p>
+                  <form method="GET" action="" >
+                    <button type="submit" 
+                    class="btn btn-outline-secondary" 
+                    value="{{ item.product.item_id }}" 
+                    name="remove_product">Remove</button>
+                  </form>
+                </p>
+              </div>
+            </div>
+          </div>
+        {%  if forloop.counter|divisibleby:200 or forloop.last %}</div><!-- row closing --><hr>{%  endif %}
+    {% endif %}
+  {% endfor %}
+
+  {% if is_paginated and queryset_list|length > 0 %}
+    <div class="pagination justify-content-center">
+      {% if queryset_list.has_previous %}
+        <a class="btn btn-outline-primary mb-4" href="?page=1">&laquo; First</a>
+        <a class="btn btn-outline-primary mb-4" href="?page={{ queryset_list.previous_page_number }}">Previous</a>
+      {% endif %}
+
+      {% for num in queryset_list.paginator.page_range %}
+        {% if queryset_list.number == num %}
+          <a class="btn btn-primary mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% elif num > queryset_list.number|add:'-3' and num < queryset_list.number|add:'3'%}
+          <a class="btn btn-outline-primary mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+
+      {% if queryset_list.has_next %}
+        <a class="btn btn-outline-primary mb-4" href="?page={{ queryset_list.next_page_number }}">Next</a>
+        <a class="btn btn-outline-primary mb-4" href="?page={{ queryset_list.paginator.num_pages }}">Last &raquo;</a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+{% endblock content %}

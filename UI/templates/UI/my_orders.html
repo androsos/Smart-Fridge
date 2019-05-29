@@ -1,0 +1,78 @@
+{% extends "UI/base2.html" %}
+
+{% block content_title %}
+	{% if title %}
+		{{ title }}
+	{% else %}
+		UI
+	{% endif %}
+{% endblock content_title %}
+
+
+{% block content_desc %}
+	<p class="lead">You can create, edit, or delete one of your own orders.</p>
+	<hr class="my-4">
+	<p class="lead">
+		<form method="GET" action="" >
+			<button type="submit" 
+                    class="btn btn-primary btn-lg" 
+                    value="1" 
+                    name="new_order">New Order
+            </button>
+		</form>
+	</p>
+{% endblock content_desc%}
+
+
+{% block content %}
+
+<div class="container">
+<div class="list-group">
+	{% for order in orders %}
+	    <a  class="list-group-item list-group-item flex-column align-items-start mb-4">
+	    	<div class="d-flex w-100 justify-content-between">
+	    		<h5 class="mb-5">Order {{order.created}}</h5>
+	    		<small>Last modified: {{order.last_modified}} </small>
+	    	</div>
+	    	<div class="container">
+		    	<ul class="list-group mb-4">
+		    		{% for item in orderitems %}
+		    			{% if item.order == order %}
+		    				<li class="list-group-item d-flex justify-content-between align-items-center">{{ item.product.name }}
+		    					<span class="badge badge-outline badge-pill">
+		    						<form method="GET" action="" >
+			    						<button type="submit" 
+			    								class="close"
+			    								value="{{ item.order_item_id }} {{ item.order.order_id }}"
+			    								name="remove_product_from_order" 
+			    								aria-label="Close">
+	  										<span aria-hidden="true">&times;</span>
+										</button>
+									</form>
+		    					</span>
+		    				</li>
+		    			{% endif %}
+		    		{% endfor %}
+		    	</ul>
+	    	</div>
+	    	<div class="float-right">
+		    	
+		    	<form method="GET" action="" >
+		    		<button type="button" class="btn btn-outline-success" onclick="window.location.href='{% url 'UI-home' %}'">	Send
+			    	</button>
+			    	<button type="button" class="btn btn-outline-warning" onclick="window.location.href='{% url 'UI-wishlist-wishlistAdd' %}'">	Edit
+			    	</button>
+
+		    		<button type="submit" 
+                    class="btn btn-outline-danger" 
+                    value="{{ order.order_id }}" 
+                    name="delete_order">Delete</button>
+		    	</form>
+	    	</div>
+	    </a>
+		
+	{% endfor %}
+</div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,27 @@
+{% extends "UI/base2.html" %}
+
+{% block content %}
+
+
+	<div class="container">
+		<div class="card text-center">
+			<div class="card-header mb-4">
+				Product Details
+			</div>
+			<img class="card-img-top" src="{{ object.image.url }}" style="width: 5rem; display: block; margin-left: auto; margin-right: auto;">
+			
+			<div class="card-body mt-4">
+				<h5 class="card-title ">Name: {{ object.product_name }} </h5> 
+				<h5 class="card-title">Brand: {{ object.brand_name }}</h5>
+				<h5 class="card-title">Category: {{ object.category.category_name }}</h5>
+				<h5 class="card-title">Quantity: {{ object.quantity }} {{object.measure_type}}</h5>
+				
+			</div>
+			<div class="card-footer text-muted">
+				Product Barcode: {{object.item_id}}
+			</div>
+		</div>
+	</div>
+
+
+{% endblock content %}
