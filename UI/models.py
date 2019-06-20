@@ -3,8 +3,9 @@ from django.utils import timezone
 from django.urls import reverse
 from django.contrib.auth.models import User
 
+
 class Categories(models.Model):
-	category_id = models.IntegerField(primary_key=True) #h kathgoria tou proiontos
+	category_id = models.IntegerField(primary_key=True)
 	category_name = models.TextField(max_length=100)
 	image = models.ImageField(upload_to='category_image', blank='True')
 
@@ -15,8 +16,6 @@ class Categories(models.Model):
 		return "%s %s" % (str(self.category_id), self.category_name)
 
 
-# ka8e klash einai ki enas ksexwristos pinakas sth bash
-# ka8e attribute einai ki ena ksexwristo field mesa sth bash
 class Barcode(models.Model):
 	item_id = models.IntegerField() #to barcode number
 	name = models.TextField(max_length=100) #to full name tou proiontos
@@ -26,9 +25,6 @@ class Barcode(models.Model):
 	measure_type = models.TextField(max_length=100, default='unknown')
 	quantity = models.IntegerField(default=0)
 	image = models.ImageField(upload_to='barcode_image', blank='True')
-
-	#def get_absolute_url(self):
-	#	return reverse('Barcode-detail', kwargs={'pk':self.pk})
 
 	def __str__(self):
 		return "%s %s %s %s %s" % (str(self.item_id), self.product_name, 
@@ -59,7 +55,7 @@ class fuge(models.Model): #INFRIDGE
 
 class Userproductlist(models.Model): #WISHLIST
 	item_id = models.AutoField(primary_key=True, serialize=False, verbose_name='ID')
-	user = models.ForeignKey(User, on_delete=models.CASCADE, default='') #an diagrafei o user, diagrafetai o ela
+	user = models.ForeignKey(User, on_delete=models.CASCADE, default='') 
 	product = models.ForeignKey(Barcode, on_delete=models.DO_NOTHING, blank=True, null=True)
 
 	def __str__(self):
@@ -68,25 +64,20 @@ class Userproductlist(models.Model): #WISHLIST
 
 class Userfridgelist(models.Model): #INFRIDGE
 	item_id = models.AutoField(primary_key=True, serialize=False, verbose_name='ID')
-	user = models.ForeignKey(User, on_delete=models.CASCADE, default='') #an diagrafei o user, diagrafetai o fuge
+	user = models.ForeignKey(User, on_delete=models.CASCADE, default='') 
 	barcode = models.ForeignKey(Barcode, on_delete=models.DO_NOTHING, blank=True, null=True)
 	insert_date = models.DateTimeField(default=timezone.now)
-	#user = models.ForeignKey(User, on_delete=models.DO_NOTHING, default='')
 
 	def __str__(self):
 		return "%s %s %s %s %s %s" % (str(self.barcode.item_id), self.barcode.product_name, 
 			self.barcode.brand_name, str(self.barcode.quantity), self.barcode.measure_type, 
 			str(self.insert_date))
 
-	#def get_absolute_url(self):
-	#	return reverse('fuge-detail', kwargs={'pk':self.pk})
-	#def get_absolute_url(self):
-	#	return reverse('Barcode-detail', kwargs={'pk':self.barcode})
-
 class Order(models.Model):
 	order_id = models.AutoField(primary_key=True, serialize=False, verbose_name='ID')
 	user = models.ForeignKey(User, on_delete=models.CASCADE, default='') #an diagrafei o user, diagrafetai to order
 	order_num = models.IntegerField()
+	date_sent = models.DateTimeField(null=True)
 	last_modified = models.DateTimeField(auto_now=True)
 	created = models.DateTimeField(auto_now_add=True, null=True)
 
@@ -99,3 +90,30 @@ class OrderItem(models.Model):
 	last_modified = models.DateTimeField(auto_now=True)
 	created = models.DateTimeField(auto_now_add=True)
 
+class AutoOrder(models.Model):
+	auto_order_id = models.AutoField(primary_key=True, serialize=False, verbose_name='ID')
+	user = models.OneToOneField(User, on_delete=models.CASCADE)
+	status = models.TextField(max_length=20, default='not_init')
+	scheduled_date = models.TextField(null=True)
+	scheduled_time = models.TextField(null=True)
+	date_sent = models.DateTimeField(null=True)
+	last_modified = models.DateTimeField(auto_now=True)
+	created = models.DateTimeField(auto_now_add=True)
+		
+class AutoOrderItem(models.Model):
+	order_item_id = models.AutoField(primary_key=True, serialize=False, verbose_name='ID')
+	order = models.ForeignKey(AutoOrder, on_delete=models.CASCADE, null=True)	
+	product = models.ForeignKey(Barcode, on_delete=models.DO_NOTHING)
+	last_modified = models.DateTimeField(auto_now=True)
+	created = models.DateTimeField(auto_now_add=True)
+
+class OrderHistory(models.Model):
+	order_id = models.AutoField(primary_key=True, serialize=False, verbose_name='ID')
+	user = models.ForeignKey(User, on_delete=models.CASCADE, default='')
+	orderType = models.TextField(max_length=20, default='unknown')
+	date_sent = models.DateTimeField()
+
+class OrderItemHistory(models.Model):
+	order_item_id = models.AutoField(primary_key=True, serialize=False, verbose_name='ID')
+	product = models.ForeignKey(Barcode, on_delete=models.DO_NOTHING)
+	order = models.ForeignKey(OrderHistory, on_delete=models.CASCADE, null=True)

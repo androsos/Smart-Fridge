@@ -12,7 +12,7 @@
 
 
 {% block content_desc %}
-  	Here you can see all the registered products in your fridge.
+  	<p class="text-secondary">Here you can see all the registered products in your fridge.</p>
 {% endblock content_desc%}
 
 
@@ -20,33 +20,43 @@
 {% block content %}
   {% get_current_timezone as TIME_ZONE %}
   {% now "d" as current_date %}
+  {% now "jS F Y H:i" as current_date1 %}
   {% for item in queryset_list %}
         {% if forloop.counter0|divisibleby:200 %} <div class="row text-center"> {%  endif %}
           <div class="col-sm-12 col-lg-3 ">
-          	{% if current_date|subtract:item.insert_date.day == 3 %}
-	            <div class="card bg-light border-warning mb-4" style="max-width: 319px;" style="min-width: 319px;">
-	              <img class="card-img-top" src="{{ item.barcode.image.url }}" style="width: 5rem; display: block; margin-left: auto; margin-right: auto;">
-	              <div class="card-body text-center border-danger">
-	                <p class="card-text text-warning">{{ item.barcode.name }}</p>
+          	{% if curr_date|datediff:item.insert_date == 3 %}
+	            <div class="card bg-light border-warning mb-4" style="max-width: 319px; min-height: 480px;" style="min-width: 319px;">
+	              <div class="card-body text-center">
+	              	<img class="img-fluid" src="{{ item.barcode.image.url }}">
+	              </div>
+	              <div class="card-body text-center border-warning">
+	                <a class="card-text text-warning" href="{% url 'Barcode-detail' item.barcode.pk %}">{{ item.barcode.name }}</a>
+	              </div>
+	              <div class="card-footer bg-light">
 	                <p>
 	                  <form method="GET" action="" >
 	                    <button type="submit" 
 	                    class="btn btn-outline-secondary" 
-	                    value="{{ item.barcode.id }}" 
+	                    value="{{ item.item_id }}" 
 	                    name="remove_product">Remove</button>
 	                  </form>
 	                </p>
 	              </div>
 	              <div class="card-footer">
-	              	<small class="text-muted">{{item.insert_date.date}}</small>
+	              	<small class="text-muted">{{item.insert_date}}</small>
 	          	  </div>
 	            </div>
-            {% elif current_date|subtract:item.insert_date.day > 3 %}
-	          	<div class="card bg-light border-danger mb-4" style="max-width: 319px;" style="min-width: 319px;" >
-	              <img class="card-img-top" src="{{ item.barcode.image.url }}" 
-	              		style="width: 5rem; display: block; margin-left: auto; margin-right: auto;">
+	            
+            {% elif curr_date|datediff:item.insert_date > 3 %}
+	          	<div class="card bg-light border-danger mb-4" style="max-width: 319px; min-height: 480px;" style="min-width: 319px;" >
+	              <div class="card-body text-center">
+	              	<img class="img-fluid" src="{{ item.barcode.image.url }}">
+	              </div>
 	              <div class="card-body text-center border-danger">
-	                <p class="card-text text-danger">{{ item.barcode.name }}</p>
+	                <a class="card-text text-danger" href="{% url 'Barcode-detail' item.barcode.pk %}">{{ item.barcode.name }}</a>
+
+	              </div>
+	              <div class="card-footer bg-light">
 	                <p>
 	                  <form method="GET" action="" >
 	                    <button type="submit" 
@@ -61,10 +71,14 @@
 	          	  </div>
 	            </div>
 	        {% else %}
-	        	<div class="card bg-light border-success mb-4" style="max-width: 319px;" style="min-width: 319px;">
-	              <img class="card-img-top" src="{{ item.barcode.image.url }}" style="width: 5rem; display: block; margin-left: auto; margin-right: auto;">
-	              <div class="card-body text-center border-success">
+	        	<div class="card bg-light border-success mb-4" style="max-width: 319px; min-height: 480px;" style="min-width: 319px;">
+	              <div class="card-body text-center">
+	              	<img class="img-fluid" src="{{ item.barcode.image.url }}">
+	              </div>
+	              <div class="card-body text-center">
 	                <a class="card-text text-success" href="{% url 'Barcode-detail' item.barcode.pk %}">{{ item.barcode.name }}</a>
+	                </div>
+	                <div class="card-footer bg-light">
 	                <p>
 	                  <form method="GET" action="" >
 	                    <button type="submit" 

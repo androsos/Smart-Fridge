@@ -1,5 +1,5 @@
 {% extends "UI/base2.html" %}
-
+{% load static %}
 
 {% block content_title %}
   {% if title %}
@@ -10,7 +10,16 @@
 {% endblock content_title %}
 
 {% block content_desc %}
-  Here you can see all the products from the current category, that you can add to your wishlist.
+  <p class="text-secondary">All products that belong in the {{title}} category</p>
+  <hr class="my-4">
+  <p class="lead">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"> <a href="{% url 'UI-wishlist-wishlistAdd' %}">Categories</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Dairy & Eggs</li>
+      </ol>
+    </nav>
+  </p>
 {% endblock content_desc%}
 
   <form method='GET' action="">
@@ -37,11 +46,15 @@
   {% for item in queryset_list %}
     {% if item.category.category_name == "Dairy & Eggs" %}
         {% if forloop.counter0|divisibleby:200 %} <div class="row text-center"> {%  endif %}
-          <div class="col-sm-12 col-lg-3 ">
-            <div class="card bg-light  mb-4" style="max-width: 319px;" style="min-width: 319px;">
-              <img class="card-img-top" src="{{ item.image.url }}" style="width: 5rem; display: block; margin-left: auto; margin-right: auto;">
-              <div class="card-body text-center">
+          <div class="col-sm-12 col-md-7 col-lg-3 ">
+            <div class="card bg-light  mb-4" style="max-width: 280px; height: 420px;">
+              <div class="card-body text-center pb-1">
+                <img class="img-fluid" src="{{ item.image.url }}" >
+              </div>
+              <div class="card-body text-center overflow-auto pt-1">
                 <a class="card-text text-primary" href="{% url 'Barcode-detail' item.pk %}">{{ item.name }}</a>
+              </div>
+              <div class="card-footer">
                 <p>
                   <form method="GET" action="" >
                     <button type="submit" 

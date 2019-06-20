@@ -10,7 +10,14 @@
 
 
 {% block content_desc %}
-	<p class="lead">You can create, edit, or delete one of your own orders.</p>
+	<p class="lead text-secondary">You can create, edit, or delete one of your own orders.</p>
+	<hr class="my-4">
+	<nav aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item active" aria-current="page"> My Orders </li>
+				<li class="breadcrumb-item"><a href="{% url 'UI-my_ordersHistory' %}">My Orders History</a></li>
+			</ol>
+		</nav>
 	<hr class="my-4">
 	<p class="lead">
 		<form method="GET" action="" >
@@ -26,19 +33,24 @@
 
 {% block content %}
 
-<div class="container">
-<div class="list-group">
+<div class="container ">
+<ul class="list-group">
 	{% for order in orders %}
-	    <a  class="list-group-item list-group-item flex-column align-items-start mb-4">
+	    <li  class="list-group-item list-group-item flex-column align-items-start mb-4">
 	    	<div class="d-flex w-100 justify-content-between">
 	    		<h5 class="mb-5">Order {{order.created}}</h5>
-	    		<small>Last modified: {{order.last_modified}} </small>
+	    		<small class="text-primary">Last Modified: {{order.last_modified}}</small>
+	    		{% if order.date_sent is None %}
+	    			<small class="text-warning">Not sent</small>
+	    		{% else %}
+	    			<small class="text-success">Sent on: {{order.date_sent}} </small>
+	    		{% endif %}
 	    	</div>
 	    	<div class="container">
-		    	<ul class="list-group mb-4">
+		    	<div class="list-group mb-4">
 		    		{% for item in orderitems %}
 		    			{% if item.order == order %}
-		    				<li class="list-group-item d-flex justify-content-between align-items-center">{{ item.product.name }}
+		    				<a href="{% url 'Barcode-detail' item.product.pk %}" class="list-group-item d-flex justify-content-between align-items-center text-info">{{ item.product.name }} &times;{{item.quantity}}
 		    					<span class="badge badge-outline badge-pill">
 		    						<form method="GET" action="" >
 			    						<button type="submit" 
@@ -48,31 +60,85 @@
 			    								aria-label="Close">
 	  										<span aria-hidden="true">&times;</span>
 										</button>
+										<button type="submit" 
+			    								class="close"
+			    								value="{{ item.order_item_id }} {{ item.order.order_id }}"
+			    								name="increase_quantity" 
+			    								aria-label="Close">
+	  										<span aria-hidden="true">&#43;</span>
+										</button>
+										{% if item.quantity == 1 %}
+											<button type="submit" 
+				    								class="close"
+				    								value="{{ item.order_item_id }} {{ item.order.order_id }}"
+				    								name="remove_product_from_order" 
+				    								aria-label="Close">
+		  										<span aria-hidden="true">&minus;</span>
+											</button>
+										{% else %}
+											<button type="submit" 
+				    								class="close"
+				    								value="{{ item.order_item_id }} {{ item.order.order_id }}"
+				    								name="decrease_quantity" 
+				    								aria-label="Close">
+		  										<span aria-hidden="true">&minus;</span>
+											</button>
+										{% endif %}
 									</form>
 		    					</span>
-		    				</li>
+
+		    				</a>
 		    			{% endif %}
 		    		{% endfor %}
-		    	</ul>
+		    	</div>
 	    	</div>
+
+	    	<hr class="my-4">
 	    	<div class="float-right">
 		    	
 		    	<form method="GET" action="" >
-		    		<button type="button" class="btn btn-outline-success" onclick="window.location.href='{% url 'UI-home' %}'">	Send
-			    	</button>
-			    	<button type="button" class="btn btn-outline-warning" onclick="window.location.href='{% url 'UI-wishlist-wishlistAdd' %}'">	Edit
-			    	</button>
-
+				    <button type="submit" 
+	                class="btn btn-outline-success" 
+	                value="{{ order.order_id }}" 
+	                name="send_order">Send</button>
+			    	
+			    	<button type="submit" 
+                    class="btn btn-outline-warning" 
+                    value="{{ order.order_id }}" 
+                    name="edit_order">Edit</button>
 		    		<button type="submit" 
                     class="btn btn-outline-danger" 
                     value="{{ order.order_id }}" 
                     name="delete_order">Delete</button>
 		    	</form>
 	    	</div>
-	    </a>
+	    </li>
 		
 	{% endfor %}
+</ul>
+
 </div>
-</div>
+
+{% if  orders|length > 0 %}
+    <div class="pagination justify-content-center">
+      {% if orders.has_previous %}
+        <a class="btn btn-outline-primary mb-4" href="?page=1">&laquo; First</a>
+        <a class="btn btn-outline-primary mb-4" href="?page={{ orders.previous_page_number }}">Previous</a>
+      {% endif %}
+
+      {% for num in orders.paginator.page_range %}
+        {% if orders.number == num %}
+          <a class="btn btn-primary mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% elif num > orders.number|add:'-3' and num < orders.number|add:'3'%}
+          <a class="btn btn-outline-primary mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+
+      {% if orders.has_next %}
+        <a class="btn btn-outline-primary mb-4" href="?page={{ orders.next_page_number }}">Next</a>
+        <a class="btn btn-outline-primary mb-4" href="?page={{ orders.paginator.num_pages }}">Last &raquo;</a>
+      {% endif %}
+    </div>
+  {% endif %}
 
 {% endblock content %}

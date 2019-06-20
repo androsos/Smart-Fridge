@@ -43,7 +43,7 @@
   <a class="card bg-light mb-4" href="{% url 'UI-wishlist-DairyEggs' %}">
     {% for category in categories_list %}
       {% if  category.category_name  == "Dairy & Eggs" %}
-          <img class="card-img-top text-center img-responsive" src="{{ category.image.url }}" >
+          <img class="card-img-top text-center img-responsive" src="{{ category.image.url }}" height="300" width="300">
           <div class="card-body text-center">
             <p class="card-text text-primary">{{ category.category_name }}</p>
           </div>
@@ -55,7 +55,33 @@
     {% for category in categories_list %}
       {% if  category.category_name  == "Meat & Poultry" %}
         
-          <img class="card-img-top" src="{{ category.image.url }}" >
+          <img class="card-img-top" src="{{ category.image.url }}" height="300" width="300">
+          <div class="card-body text-center">
+            <p class="card-text text-primary">{{ category.category_name }}</p>
+          </div>
+
+      {% endif %}
+    {% endfor %}
+  </a>
+
+  <a class="card bg-light mb-4" href="{% url 'UI-BreadPastry' %}">
+    {% for category in categories_list %}
+      {% if  category.category_name  == "Bread & Pastry" %}
+        
+          <img class="card-img-top" src="{{ category.image.url }}" height="300" width="300">
+          <div class="card-body text-center">
+            <p class="card-text text-primary">{{ category.category_name }}</p>
+          </div>
+
+      {% endif %}
+    {% endfor %}
+  </a>
+
+  <a class="card bg-light mb-4" href="{% url 'UI-wishlist-MeatPoultry' %}">
+    {% for category in categories_list %}
+      {% if  category.category_name  == "Cheese, Cured Meat & Delicatessen" %}
+        
+          <img class="card-img-top" src="{{ category.image.url }}" height="300" width="300">
           <div class="card-body text-center">
             <p class="card-text text-primary">{{ category.category_name }}</p>
           </div>

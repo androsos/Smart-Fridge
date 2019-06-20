@@ -1,0 +1,91 @@
+{% extends "UI/base2.html" %}
+
+
+{% block content_title %}
+	{% if title %}
+		{{ title }}
+	{% else %}
+		UI
+	{% endif %}
+{% endblock content_title %}
+
+{% block content_desc %}
+	<p class="lead text-secondary">Here you can schedule an auto-sent order.</p>
+	<hr class="my-4">
+	<p class="lead">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb">
+
+				<li class="breadcrumb-item"> <a href="{% url 'UI-my_orders' %}">My Orders</a></li>
+				<li class="breadcrumb-item active" aria-current="page">My Orders History</li>
+			</ol>
+		</nav>
+	</p>
+{% endblock content_desc%}
+
+
+{% block content %}
+
+<div class="container ">
+<ul class="list-group">
+	{% for order in orders %}
+	    <li  class="list-group-item list-group-item flex-column align-items-start mb-4">
+	    	<div class="d-flex w-100 justify-content-between">
+	    		<h5 class="mb-5">My Order</h5>
+	    		<small class="text-success">Date sent: {{order.date_sent}} </small>
+	    	</div>
+	    	<div class="container">
+		    	<div class="list-group mb-4">
+		    		{% for item in orderitems %}
+		    			{% if item.order == order %}
+		    				<a href="{% url 'Barcode-detail' item.product.pk %}" class="list-group-item d-flex justify-content-between align-items-center text-info">{{ item.product.name }}
+		    				</a>
+		    			{% endif %}
+		    		{% endfor %}
+		    	</div>
+	    	</div>
+	    	<hr class="my-4">
+	    	<div class="float-right">
+		    	<form method="GET" action="" >
+		    		<button type="submit" 
+                    class="btn btn-outline-success" 
+                    value="{{ order.order_id }}" 
+                    name="add_all">Add list to fridge</button>
+
+		    		<button type="submit" 
+                    class="btn btn-outline-danger" 
+                    value="{{ order.order_id }}" 
+                    name="clear_order">Delete</button>
+		    	</form>
+	    	</div>
+	    </li>
+		
+	{% endfor %}
+</ul>
+
+</div>
+
+
+{% if  orders|length > 0 %}
+    <div class="pagination justify-content-center">
+      {% if orders.has_previous %}
+        <a class="btn btn-outline-primary mb-4" href="?page=1">&laquo; First</a>
+        <a class="btn btn-outline-primary mb-4" href="?page={{ orders.previous_page_number }}">Previous</a>
+      {% endif %}
+
+      {% for num in orders.paginator.page_range %}
+        {% if orders.number == num %}
+          <a class="btn btn-primary mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% elif num > orders.number|add:'-3' and num < orders.number|add:'3'%}
+          <a class="btn btn-outline-primary mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+
+      {% if orders.has_next %}
+        <a class="btn btn-outline-primary mb-4" href="?page={{ orders.next_page_number }}">Next</a>
+        <a class="btn btn-outline-primary mb-4" href="?page={{ orders.paginator.num_pages }}">Last &raquo;</a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+{% endblock content %}

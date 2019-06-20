@@ -1,0 +1,107 @@
+{% extends "UI/base2.html" %}
+
+  <p>Choose a category below</p>
+
+  {% for category in categories_list %}
+    
+    {% if  category.category_name  == "Dairy & Eggs" %}
+      <div class="container">
+        <p>
+          <a href="{% url 'UI-wishlist-DairyEggs' %}">{{ category.category_name }}</a>
+        </p>
+        <a href="{% url 'UI-wishlist-DairyEggs' %}">
+          <img src="{{ category.image.url }}" style="width:120px height:100px">
+        </a>
+      </div>  
+    {% endif %}
+
+    {% if  category.category_name  == "Meat & Poultry" %}
+      <div class="container">
+        <p>
+          <a href="{% url 'UI-wishlist-MeatPoultry' %}">{{ category.category_name }}</a>
+        </p>
+        <a href="{% url 'UI-wishlist-MeatPoultry' %}">
+          <img class="img-responsive" src="{{ category.image.url }}" width=240 height=150>
+        </a>
+      </div>
+    {% endif %}
+
+  {% endfor %}
+
+{% block content_title %}
+  {% if title %}
+    {{ title }}
+  {% else %}
+    UI
+  {% endif %}
+{% endblock content_title %}
+
+{% block content_desc %}
+  <hr class="my-4">
+  <p class="lead">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"> <a href="{% url 'UI-my_orders' %}">My Orders</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Categories</li>
+      </ol>
+    </nav>
+  </p>
+{% endblock content_desc%}
+
+
+{% block content %}
+
+<div class="card-deck">
+  <a class="card bg-light mb-4" href="{% url 'UI-my_orders_dairyeggs' %}">
+    {% for category in categories_list %}
+      {% if  category.category_name  == "Dairy & Eggs" %}
+          <img class="card-img-top text-center img-responsive" src="{{ category.image.url }}" height="300" width="300">
+          <div class="card-body text-center">
+            <p class="card-text text-primary">{{ category.category_name }}</p>
+          </div>
+      {% endif %}
+    {% endfor %}
+  </a>
+
+  <a class="card bg-light mb-4" href="{% url 'UI-my_orders_meatpoultry' %}">
+    {% for category in categories_list %}
+      {% if  category.category_name  == "Meat & Poultry" %}
+        
+          <img class="card-img-top" src="{{ category.image.url }}" height="300" width="300">
+          <div class="card-body text-center">
+            <p class="card-text text-primary">{{ category.category_name }}</p>
+          </div>
+
+      {% endif %}
+    {% endfor %}
+  </a>
+
+  <a class="card bg-light mb-4" href="{% url 'UI-my_orders_breadpastry' %}">
+    {% for category in categories_list %}
+      {% if  category.category_name  == "Bread & Pastry" %}
+        
+          <img class="card-img-top" src="{{ category.image.url }}" height="300" width="300">
+          <div class="card-body text-center">
+            <p class="card-text text-primary">{{ category.category_name }}</p>
+          </div>
+
+      {% endif %}
+    {% endfor %}
+  </a>
+
+  <a class="card bg-light mb-4" href="{% url 'UI-wishlist-MeatPoultry' %}">
+    {% for category in categories_list %}
+      {% if  category.category_name  == "Cheese, Cured Meat & Delicatessen" %}
+        
+          <img class="card-img-top" src="{{ category.image.url }}" height="300" width="300">
+          <div class="card-body text-center">
+            <p class="card-text text-primary">{{ category.category_name }}</p>
+          </div>
+
+      {% endif %}
+    {% endfor %}
+  </a>
+
+</div>
+
+{% endblock content %}

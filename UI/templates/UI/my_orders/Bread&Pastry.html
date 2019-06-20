@@ -1,0 +1,112 @@
+{% extends "UI/base2.html" %}
+
+
+{% block content_title %}
+  {% if title %}
+    {{ title }}
+  {% else %}
+    UI
+  {% endif %}
+{% endblock content_title %}
+
+{% block content_desc %}
+  Here you can see all the products from the current category, that you can add to your wishlist.
+  <hr class="my-4">
+  <p class="lead">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"> <a href="{% url 'UI-my_orders' %}">My Orders</a></li>
+        <li class="breadcrumb-item"> <a href="{% url 'UI-my_orders_categories' %}">Categories</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Bread & Pastry</li>
+      </ol>
+    </nav>
+  </p>
+  <hr class="my-4">
+  <p class="lead text-secondary">
+    <a href="{% url 'UI-my_orders' %}">&laquo; back to my orders</a>
+  </p>
+{% endblock content_desc%}
+
+  <form method='GET' action="">
+    <input type="text" name='q' placeholder="Search product">
+    <input type="submit" value="Search">
+  </form>
+	
+  {% for category in categories_list %}
+    
+    {% if  category.category_name  == "Bread & Pastry" %}
+      <p>
+        <a href="{% url 'UI-wishlist-wishlistAdd' %}">{{ category.category_name }}</a>
+      </p>
+      <a href="{% url 'UI-wishlist-wishlistAdd' %}">
+        <img src="{{ category.image.url }}" width=240 height=150>
+      </a>
+
+    {% endif %}
+
+  {% endfor %}
+
+{% block content %}
+
+  {% for item in queryset_list %}
+    {% if item.category.category_name == "Bread & Pastry" %}
+        {% if forloop.counter0|divisibleby:200 %} <div class="row text-center"> {%  endif %}
+          <div class="col-sm-12 col-lg-3 ">
+            <div class="card bg-light  mb-4" style="max-width: 319px; min-height: 480px;" style="min-width: 319px;">
+              <div class="card-body text-center">
+                <img class="img-fluid" src="{{ item.image.url }}">
+              </div>
+              <div class="card-body text-center">
+                <a class="card-text text-primary" href="{% url 'Barcode-detail' item.pk %}">{{ item.name }}</a>
+              </div>
+              <div class="card-footer text-center">
+                <p>
+                  <form method="GET" action="" >
+                    <div class="dropdown">
+                      <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Add To Order
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                        {% for order in orders %}
+                          <button type="submit" 
+                            class="btn btn-outline-primary dropdown-item"
+                            value="{{ item.item_id }} {{ order.order_id }}" 
+                            name="add_to_order">Order: {{ order.created }}
+                          </button>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </form>
+                </p>
+              </div>
+            </div>
+          </div>
+        {%  if forloop.counter|divisibleby:200 or forloop.last %}</div><!-- row closing --><hr>{%  endif %}
+    {%endif%}
+  {% endfor %}
+
+  
+  {% if is_paginated and queryset_list|length > 0 %}
+    <div class="pagination justify-content-center">
+      {% if queryset_list.has_previous %}
+        <a class="btn btn-outline-primary mb-4" href="?page=1">&laquo; First</a>
+        <a class="btn btn-outline-primary mb-4" href="?page={{ queryset_list.previous_page_number }}">Previous</a>
+      {% endif %}
+
+      {% for num in queryset_list.paginator.page_range %}
+        {% if queryset_list.number == num %}
+          <a class="btn btn-primary mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% elif num > queryset_list.number|add:'-3' and num < queryset_list.number|add:'3'%}
+          <a class="btn btn-outline-primary mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+
+      {% if queryset_list.has_next %}
+        <a class="btn btn-outline-primary mb-4" href="?page={{ queryset_list.next_page_number }}">Next</a>
+        <a class="btn btn-outline-primary mb-4" href="?page={{ queryset_list.paginator.num_pages }}">Last &raquo;</a>
+      {% endif %}
+    </div>
+  {% endif %}
+  
+
+{% endblock content %}

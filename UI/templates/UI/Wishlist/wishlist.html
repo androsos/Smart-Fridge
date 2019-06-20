@@ -44,10 +44,14 @@
     {% if item %}
         {% if forloop.counter0|divisibleby:200 %} <div class="row text-center"> {%  endif %}
           <div class="col-sm-12 col-lg-3 ">
-            <div class="card bg-light  mb-4" style="max-width: 319px;" style="min-width: 319px;">
-              <img class="card-img-top" src="{{ item.product.image.url }}" style="width: 5rem; display: block; margin-left: auto; margin-right: auto;">
+            <div class="card bg-light  mb-4" style="max-width: 319px; min-height: 480px;" style="min-width: 319px;">
+              <div class="card-body text-center">
+                <img class="img-fluid" src="{{ item.product.image.url }}">
+              </div>
               <div class="card-body text-center">
                 <a class="card-text text-primary" href="{% url 'Barcode-detail' item.product.pk %}">{{ item.product.name }}</a>
+              </div>
+              <div class="card-footer">
                 <p>
                   <form method="GET" action="" >
                     <button type="submit" 

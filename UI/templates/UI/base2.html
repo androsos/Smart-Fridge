@@ -15,10 +15,12 @@
 
 	    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" />
 
+	    
+
 		{% if title %}
 			<title>{{ title }}</title>
 		{% else %}
-			<title>UI</title>
+			<title>Smart Fridge</title>
 		{% endif %}
 	</head>
 
@@ -26,14 +28,31 @@
 
 		<div class="fixed-top">
 		    {% if messages %}
-		      {% for message in messages %}
-		            <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
-			            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-			              <span aria-hidden="true">&times;</span>
-			          	</button>
-		              {{ message }}
-		            </div>
-		      {% endfor %}
+				{% for message in messages %}
+					{% if message.tags == 'info' %}
+					    <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+					        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					          <span aria-hidden="true">&times;</span>
+					      	</button>
+					      	{{ message }}
+					    </div>
+					{% elif message.tags == 'success' %}
+						<div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+					        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					          <span aria-hidden="true">&times;</span>
+					      	</button>
+					      	{{ message }}
+					    </div>
+					{% elif message.tags == 'warning' %}
+						<div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+					        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					          <span aria-hidden="true">&times;</span>
+					      	</button>
+					      	{{ message }}
+					    </div>    
+				    {% endif %}
+
+				{% endfor %}
 		    {% endif %}
 		 </div>
 		
@@ -50,7 +69,15 @@
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
 					<ul class="navbar-nav ml-auto">
 						<li class="nav-item">
-							<a class="nav-link" href="{% url 'UI-home' %}">Home</a>
+							<a class="nav-link" href="{% url 'UI-home' %}">
+								<span>Home</span>
+								{% if notify_warning == True %}
+									<span class="badge badge-warning">!</span>
+								{% endif %}
+								{% if notify_danger == True %}
+									<span class="badge badge-danger">!</span>
+								{% endif %}
+							</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="{% url 'UI-wishlist' %}">Wishlist</a>
@@ -58,24 +85,36 @@
 						<li class="nav-item dropdown">
 							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" data-toggle="dropdown">Categories</a>
 							<div class="dropdown-menu">
-								<a class="dropdown-item" href="{% url 'UI-wishlist-DairyEggs' %}">Dairy & Eggs</a>
+								<a class="dropdown-item" href="{% url 'UI-wishlist-wishlistAdd' %}">Categories</a>
 								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="{% url 'UI-wishlist-DairyEggs' %}">Dairy & Eggs</a>
 								<a class="dropdown-item" href="{% url 'UI-wishlist-MeatPoultry' %}">Meat & Poultry</a>
+								<a class="dropdown-item" href="{% url 'UI-BreadPastry' %}">Bread & Pastry</a>
 							</div>
 						</li>
 						<li class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" data-toggle="dropdown">Orders</a>
+							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" data-toggle="dropdown">
+								<span>Orders</span>
+								{% if ready_order == True %}
+									<span class="badge badge-success">!</span>
+								{% endif %}
+							</a>
 							<div class="dropdown-menu">
-								
+								<a class="dropdown-item" href="{% url 'UI-order' %}">
+									<span>Scheduled Order</span> 
+									{% if ready_order == True %}
+										<span class="badge badge-success">!</span>
+									{% endif %}
+								</a>
 								<div class="dropdown-divider"></div>
 								<a class="dropdown-item" href="{% url 'UI-my_orders' %}">My Orders</a>
 							</div>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="{% url 'UI-register' %}">Register</a>
+							<a class="nav-link" href="{% url 'UI-register' %}">Add to Fridge</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="{% url 'UI-unregister' %}">Unregister</a>
+							<a class="nav-link" href="{% url 'UI-unregister' %}">Remove from Fridge</a>
 						</li>
 						{% if user.is_authenticated %}
 							<li class="nav-item">
@@ -113,7 +152,10 @@
 
 			{% block content %}{% endblock content%}
 
+
 		</div>
+
+		
 		
 		
 
@@ -124,4 +166,9 @@
 	    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
 	</body>
+	<footer class="py-3 bg-light text-black-50 sticky-bottom">
+    <div class="container text-center">
+      <small>Copyright &copy; Smart Fridge</small>
+    </div>
+  </footer>
 </html>

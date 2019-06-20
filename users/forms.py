@@ -7,15 +7,15 @@ class UserRegisterForm(UserCreationForm):
 	email = forms.EmailField()
 
 	class Meta:
-		model = User #peirazoume to user model
-		fields = ['username', 'email', 'password1', 'password2'] #poia fields exoume sto form
+		model = User 
+		fields = ['username', 'email', 'password1', 'password2']
 
 class UserUpdateForm(forms.ModelForm):
 	email = forms.EmailField()
 
 	class Meta:
-		model = User #peirazoume to user model
-		fields = ['username', 'email'] #poia fields exoume sto form
+		model = User
+		fields = ['username', 'email']
 		
 class ProfileUpdateForm(forms.ModelForm):
 	class Meta:

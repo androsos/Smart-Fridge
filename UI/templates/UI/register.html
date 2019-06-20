@@ -1,7 +1,8 @@
 {% extends "UI/base2.html" %}
+{% load crispy_forms_tags %}
 
 {% block content_desc %}
-	Insert a product in your fridge.
+	<p class="text-secondary">Insert a product in your fridge.</p>
 {% endblock content_desc%}
 
 {% block content_title %}
@@ -13,19 +14,16 @@
 {% endblock content_title %}
 
 {% block content_register %}
-	<div class="content-section">
+	<div class="content-section text-primary">
 		<form method='POST'>
         	{% csrf_token %}
         	<fieldset class="form-group">
         		<legend class="border-bottom mb-4"> Enter barcode </legend>
-        		{{ form }}
+        		{{ form|crispy }}
         	</fieldset>
         	<div class="form-group">
         		<button class="btn btn-outline-primary" type="submit"> Search </button>
         	</div>
      	</form>
 	</div>
-
-	
-	
 {% endblock content_register %}

@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 
-import djcelery
-djcelery.setup_loader()
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -27,7 +25,7 @@ SECRET_KEY = 'nb*c6pu8a82bnbw_l(yeu8d6=(bgy+h9*=hgx*s5cf^om7$bcv'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.1.53', 'localhost', '127.0.0.1', '192.168.1.3']
 
 
 # Application definition
@@ -37,7 +35,6 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'crispy_forms',
     'background_task',
-    'djcelery',
     'django_apscheduler',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -70,6 +67,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'UI.context_processors.home_notification',
+                'UI.context_processors.order_notification',
             ],
         },
     },

@@ -1,13 +1,122 @@
 {% extends "UI/base2.html" %}
-
-
-{% block content %}
+{% load crispy_forms_tags %}
 
 <h2>count is {{ count }}</h2>
 <div class="container">
 	<ul class="list-group">
 		{% for product in queryset_list %}
 		    <li class="list-group-item d-flex justify-content-between align-items-center">{{ product.product }}</li>
+		{% endfor %}
+	</ul>
+</div>
+
+<div class="container ">
+	<ul class="list-group">
+		{% for uss in queryset_list %}
+			<li class="list-group-item d-flex justify-content-between align-items-center">{{ uss.username }}</li>
+		{% endfor %}
+	</ul>
+</div>
+
+{% block content_title %}
+	{% if title %}
+		{{ title }}
+	{% else %}
+		UI
+	{% endif %}
+{% endblock content_title %}
+
+{% block content_desc %}
+	<p class="lead text-secondary">Here you can schedule an auto-sent order.</p>
+	<hr class="my-4">
+	<p class="lead">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item active" aria-current="page"> Scheduled Order </li>
+				<li class="breadcrumb-item"><a href="{% url 'UI-scheduledHistory' %}">Scheduled Orders History</a></li>
+			</ol>
+		</nav>
+	</p>
+{% endblock content_desc%}
+
+
+{% block content %}
+
+<div class="container  mb-4">
+	<ul class="list-group ">
+		{% for order in orders %}
+		    <li  class="list-group-item list-group-item flex-column align-items-start mb-1 mt-1 ml-5 mr-5 ">
+		    	<div class="d-flex w-100 justify-content-between">
+		    		<h3 class="mb-5">Scheduled Order details</h3>
+		    		{% if order.status == "cancelled" %}
+		    			<small class="text-danger">Cancelled</small>
+		    		{% elif order.status == "ready" %}	
+		    			<small class="text-success">Order is ready! Click confirm to send!</small>
+		    		{% else %} 
+		    			{% if order.scheduled_date is None %}
+		    				<small class="text-info"> Not Scheduled </small>
+		    			{% else %} 
+		    				<small class="text-info">Scheduled for: {{order.scheduled_date}} {{order.scheduled_time}}:00 </small>
+		    			{% endif %}
+		    		{% endif %}
+		    	</div>
+		    	<div class="container text-dark ">
+		    		<div class="float-left mr-5">
+						<form method="POST">
+							{% csrf_token %}
+						        <legend class="border-bottom mb-4"> Choose Day and time </legend>
+						        <div class="form-group text-secondary">
+						        	{{ form.as_p }}
+						        </div>
+							<div class="form-group ml-5">
+								<button class="btn btn-outline-info" type="submit">Sumbit</button>
+							</div>
+						</form>
+					</div>
+			    	<div class="list-group mb-4">
+			    		{% for item in orderitems %}
+			    			{% if item.order == order %}
+			    				<a href="{% url 'Barcode-detail' item.product.pk %}" class="list-group-item d-flex justify-content-between align-items-center text-info">{{ item.product.name }}
+			    				</a>
+			    			{% endif %}
+			    		{% endfor %}
+			    	</div>
+		    	</div>
+		    	<div class="float-right">
+			    	<hr class="my-4">
+			    	<form method="GET" action="" >
+
+			    		{% if order.status == "ready" and orderitems.count > 0 %}
+			    			<button type="submit" 
+				    			class="btn btn-outline-success" 
+				    			value="{{ order.auto_order_id }}" 
+				    			name="confirm_order">Confirm
+				    		</button>	
+				    	{% else %}
+				    		<button type="button" class="btn btn-outline-success" disabled>Send</button>
+				    	{% endif %}
+
+				    	<button type="submit" 
+				    		class="btn btn-outline-warning" 
+				    		value="{{ order.auto_order_id }}" 
+				    		name="update_order">Update
+				    	</button>	
+
+				    	{% if order.status == "cancelled" %}
+				    		<button type="button" class="btn btn btn-outline-danger" disabled>Cancel</button>
+				    	{% else %}
+				    		<button type="submit" 
+	                    		class="btn btn-outline-danger" 
+	                    		value="{{ order.auto_order_id }}" 
+	                    		name="cancel_order">Cancel
+	                		</button>
+				    	{% endif %}
+
+			    		
+			    	</form>
+		    	</div>
+		    </li>
+			
 		{% endfor %}
 	</ul>
 </div>
